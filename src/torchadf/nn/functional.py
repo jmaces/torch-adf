@@ -1,9 +1,16 @@
-from math import prod
+import operator
+
+from functools import reduce
 
 import torch.nn.functional as F
 
 from torch.distributions import Normal
 from torch.nn.modules.utils import _pair, _single, _triple
+
+
+# utility product over iterables
+def prod(iterable):
+    return reduce(operator.mul, iterable, 1)
 
 
 # ----- ----- Convolutional ----- -----
