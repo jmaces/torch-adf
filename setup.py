@@ -93,7 +93,7 @@ if __name__ == "__main__":
         long_description_content_type="text/x-rst",
         packages=PACKAGES,
         package_dir={"": "src"},
-        python_requires=">=3.7",
+        python_requires=">=3.6",
         zip_safe=False,
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
