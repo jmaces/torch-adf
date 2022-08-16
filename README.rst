@@ -7,8 +7,8 @@
     :target: https://torch-adf.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://travis-ci.com/jmaces/torch-adf.svg?branch=main
-    :target: https://travis-ci.com/jmaces/torch-adf?branch=main
+.. image:: https://github.com/jmaces/torch-adf/actions/workflows/pr-check.yml/badge.svg?branch=main
+    :target: https://github.com/jmaces/torch-adf/actions/workflows/pr-check.yml?branch=main
     :alt: CI Status
 
 .. image:: https://codecov.io/gh/jmaces/torch-adf/branch/main/graph/badge.svg
