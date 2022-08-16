@@ -15,6 +15,7 @@ class ReLU(Module):
         Covariance computation mode. Default is "diag".
 
     """
+
     def __init__(self, mode="diag"):
         super(ReLU, self).__init__()
         self.mode = mode.lower()

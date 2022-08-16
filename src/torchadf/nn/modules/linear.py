@@ -1,5 +1,7 @@
 import math
+
 import torch
+
 from torch.nn import Module, init
 from torch.nn.parameter import Parameter
 
@@ -18,6 +20,7 @@ class Identity(Module):
     **kwargs: any keyword arguments (unused).
 
     """
+
     def __init__(self, *args, **kwargs):
         super(Identity, self).__init__()
 
@@ -40,20 +43,30 @@ class Linear(Module):
         Add a learnable bias to the linear layer (Default True).
     mode : {"diag", "diagonal", "lowrank", "half", "full"}, optional
         Covariance propagation mode (Default "diag").
-        
+
     """
-    def __init__(self, in_features, out_features, bias=True,
-                 device=None, dtype=None, mode="diag"):
-        factory_kwargs = {'device': device, 'dtype': dtype}
+
+    def __init__(
+        self,
+        in_features,
+        out_features,
+        bias=True,
+        device=None,
+        dtype=None,
+        mode="diag",
+    ):
+        factory_kwargs = {"device": device, "dtype": dtype}
         super(Linear, self).__init__()
         self.mode = mode.lower()
         self.in_features = in_features
         self.out_features = out_features
-        self.weight = Parameter(torch.empty((out_features, in_features), **factory_kwargs))
+        self.weight = Parameter(
+            torch.empty((out_features, in_features), **factory_kwargs)
+        )
         if bias:
             self.bias = Parameter(torch.empty(out_features, **factory_kwargs))
         else:
-            self.register_parameter('bias', None)
+            self.register_parameter("bias", None)
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -67,6 +80,6 @@ class Linear(Module):
         return F.linear(in_mean, in_var, self.weight, self.bias, self.mode)
 
     def extra_repr(self):
-        return 'in_features={}, out_features={}, bias={}'.format(
+        return "in_features={}, out_features={}, bias={}".format(
             self.in_features, self.out_features, self.bias is not None
         )

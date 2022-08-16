@@ -23,6 +23,7 @@ class Flatten(Module):
     mode : {"diag", "diagonal", "lowrank", "half", "full"}, optional
         Covariance propagation mode (Default "diag").
     """
+
     def __init__(self, start_dim=1, end_dim=-1, mode="diag"):
         super(Flatten, self).__init__()
         self.start_dim = start_dim
@@ -30,12 +31,12 @@ class Flatten(Module):
         self.mode = mode.lower()
 
     def forward(self, in_mean, in_var):
-        return F.flatten(in_mean, in_var, self.start_dim, self.end_dim, self.mode)
+        return F.flatten(
+            in_mean, in_var, self.start_dim, self.end_dim, self.mode
+        )
 
     def extra_repr(self):
-        return 'start_dim={}, end_dim={}'.format(
-            self.start_dim, self.end_dim
-        )
+        return "start_dim={}, end_dim={}".format(self.start_dim, self.end_dim)
 
 
 class Unflatten(Module):
@@ -58,6 +59,7 @@ class Unflatten(Module):
     mode : {"diag", "diagonal", "lowrank", "half", "full"}, optional
         Covariance propagation mode (Default "diag").
     """
+
     def __init__(self, dim, unflattened_size, mode="diag"):
         super(Unflatten, self).__init__()
         self.mode = mode.lower()
@@ -73,28 +75,32 @@ class Unflatten(Module):
         self.unflattened_size = unflattened_size
 
     def _require_tuple_tuple(self, input):
-        raise NotImplementedError("Unflatten is not yet implemented for "
-                                  "named Tensor dimensions.")
-        # if (isinstance(input, tuple)):
-        #     for idx, elem in enumerate(input):
-        #         if not isinstance(elem, tuple):
-        #             raise TypeError("unflattened_size must be tuple of tuples, " +
-        #                             "but found element of type {} at pos {}".format(type(elem).__name__, idx))
-        #     return
-        # raise TypeError("unflattened_size must be a tuple of tuples, " +
-        #                 "but found type {}".format(type(input).__name__))
+        raise NotImplementedError(
+            "Unflatten is not yet implemented for " "named Tensor dimensions."
+        )
 
     def _require_tuple_int(self, input):
-        if (isinstance(input, (tuple, list))):
+        if isinstance(input, (tuple, list)):
             for idx, elem in enumerate(input):
                 if not isinstance(elem, int):
-                    raise TypeError("unflattened_size must be tuple of ints, " +
-                                    "but found element of type {} at pos {}".format(type(elem).__name__, idx))
+                    raise TypeError(
+                        "unflattened_size must be tuple of ints, "
+                        + "but found element of type {} at pos {}".format(
+                            type(elem).__name__, idx
+                        )
+                    )
             return
-        raise TypeError("unflattened_size must be a tuple of ints, but found type {}".format(type(input).__name__))
+        raise TypeError(
+            "unflattened_size must be a tuple of ints, "
+            + "but found type {}".format(type(input).__name__)
+        )
 
     def forward(self, in_mean, in_var):
-        return F.unflatten(in_mean, in_var, self.dim, self.unflattened_size, self.mode)
+        return F.unflatten(
+            in_mean, in_var, self.dim, self.unflattened_size, self.mode
+        )
 
     def extra_repr(self):
-        return 'dim={}, unflattened_size={}'.format(self.dim, self.unflattened_size)
+        return "dim={}, unflattened_size={}".format(
+            self.dim, self.unflattened_size
+        )

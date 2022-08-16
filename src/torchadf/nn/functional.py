@@ -1,12 +1,25 @@
-import torch.nn.functional as F
-from torch.distributions import Normal
 from math import prod
-from torch.nn.modules.utils import _single, _pair, _triple
+
+import torch.nn.functional as F
+
+from torch.distributions import Normal
+from torch.nn.modules.utils import _pair, _single, _triple
+
 
 # ----- ----- Convolutional ----- -----
 
 
-def conv1d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, groups=1, mode="diag"):
+def conv1d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    mode="diag",
+):
     """Applies a convolution function for 1D inputs.
 
     Assumed Density Filtering (ADF) version of `torch.nn.functional.conv1d`.
@@ -41,26 +54,36 @@ def conv1d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.conv1d(in_mean, weight, bias, stride, padding, dilation, groups)
+    out_mean = F.conv1d(
+        in_mean, weight, bias, stride, padding, dilation, groups
+    )
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.conv1d(in_var, weight.square(), None, stride, padding, dilation, groups)
+        out_var = F.conv1d(
+            in_var, weight.square(), None, stride, padding, dilation, groups
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -3)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-2]
         in_var = in_var.flatten(0, -3)  # compress leading batch dimensions
-        out_var = F.conv1d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv1d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-3, -1)  # move back rank dimension
     elif mode.lower() == "full":
         in_var = in_var.movedim((-2, -1), (-4, -3))  # move cov dims away
         unflatten_size = in_var.shape[:-2]
         in_var = in_var.flatten(0, -3)  # compress leading dimensions
-        out_var = F.conv1d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv1d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
         out_var = out_var.movedim((-4, -3), (-2, -1))  # move cov dims back
         unflatten_size = out_var.shape[:-2]
         out_var = out_var.flatten(0, -3)  # compress leading dimensions
-        out_var = F.conv1d(out_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv1d(
+            out_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -69,7 +92,17 @@ def conv1d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     return out_mean, out_var
 
 
-def conv2d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, groups=1, mode="diag"):
+def conv2d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    mode="diag",
+):
     """Applies a convolution function for 2D inputs.
 
     Assumed Density Filtering (ADF) version of `torch.nn.functional.conv2d`.
@@ -104,26 +137,40 @@ def conv2d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.conv2d(in_mean, weight, bias, stride, padding, dilation, groups)
+    out_mean = F.conv2d(
+        in_mean, weight, bias, stride, padding, dilation, groups
+    )
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.conv2d(in_var, weight.square(), None, stride, padding, dilation, groups)
+        out_var = F.conv2d(
+            in_var, weight.square(), None, stride, padding, dilation, groups
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -4)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-3]
         in_var = in_var.flatten(0, -4)  # compress leading batch dimensions
-        out_var = F.conv2d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv2d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-4, -1)  # move back rank dimension
     elif mode.lower() == "full":
-        in_var = in_var.movedim((-3, -2, -1), (-6, -5, -4))  # move cov dims away
+        in_var = in_var.movedim(
+            (-3, -2, -1), (-6, -5, -4)
+        )  # move cov dims away
         unflatten_size = in_var.shape[:-3]
         in_var = in_var.flatten(0, -4)  # compress leading dimensions
-        out_var = F.conv2d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv2d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
-        out_var = out_var.movedim((-6, -5, -4), (-3, -2, -1))  # move cov dims back
+        out_var = out_var.movedim(
+            (-6, -5, -4), (-3, -2, -1)
+        )  # move cov dims back
         unflatten_size = out_var.shape[:-3]
         out_var = out_var.flatten(0, -4)  # compress leading dimensions
-        out_var = F.conv2d(out_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv2d(
+            out_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -132,7 +179,17 @@ def conv2d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     return out_mean, out_var
 
 
-def conv3d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, groups=1, mode="diag"):
+def conv3d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    dilation=1,
+    groups=1,
+    mode="diag",
+):
     """Applies a convolution function for 3D inputs.
 
     Assumed Density Filtering (ADF) version of `torch.nn.functional.conv3d`.
@@ -167,26 +224,40 @@ def conv3d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.conv3d(in_mean, weight, bias, stride, padding, dilation, groups)
+    out_mean = F.conv3d(
+        in_mean, weight, bias, stride, padding, dilation, groups
+    )
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.conv3d(in_var, weight.square(), None, stride, padding, dilation, groups)
+        out_var = F.conv3d(
+            in_var, weight.square(), None, stride, padding, dilation, groups
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -5)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-4]
         in_var = in_var.flatten(0, -5)  # compress leading batch dimensions
-        out_var = F.conv3d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv3d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-5, -1)  # move back rank dimension
     elif mode.lower() == "full":
-        in_var = in_var.movedim((-4, -3, -2, -1), (-8, -7, -6, -5))  # move cov dims away
+        in_var = in_var.movedim(
+            (-4, -3, -2, -1), (-8, -7, -6, -5)
+        )  # move cov dims away
         unflatten_size = in_var.shape[:-4]
         in_var = in_var.flatten(0, -5)  # compress leading dimensions
-        out_var = F.conv3d(in_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv3d(
+            in_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
-        out_var = out_var.movedim((-8, -7, -6, -5), (-4, -3, -2, -1))  # move cov dims back
+        out_var = out_var.movedim(
+            (-8, -7, -6, -5), (-4, -3, -2, -1)
+        )  # move cov dims back
         unflatten_size = out_var.shape[:-4]
         out_var = out_var.flatten(0, -5)  # compress leading dimensions
-        out_var = F.conv3d(out_var, weight, None, stride, padding, dilation, groups)
+        out_var = F.conv3d(
+            out_var, weight, None, stride, padding, dilation, groups
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -195,17 +266,50 @@ def conv3d(in_mean, in_var, weight, bias=None, stride=1, padding=0, dilation=1, 
     return out_mean, out_var
 
 
-def conv_transpose1d(in_mean, in_var, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1, mode="diag"):
+def conv_transpose1d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+    mode="diag",
+):
     # TODO: add transpose convs
     raise NotImplementedError("Transpose convolution is not yet implemented.")
 
 
-def conv_transpose2d(in_mean, in_var, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1, mode="diag"):
+def conv_transpose2d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+    mode="diag",
+):
     # TODO: add transpose convs
     raise NotImplementedError("Transpose convolution is not yet implemented.")
 
 
-def conv_transpose3d(in_mean, in_var, weight, bias=None, stride=1, padding=0, output_padding=0, groups=1, dilation=1, mode="diag"):
+def conv_transpose3d(
+    in_mean,
+    in_var,
+    weight,
+    bias=None,
+    stride=1,
+    padding=0,
+    output_padding=0,
+    groups=1,
+    dilation=1,
+    mode="diag",
+):
     # TODO: add transpose convs
     raise NotImplementedError("Transpose convolution is not yet implemented.")
 
@@ -213,10 +317,20 @@ def conv_transpose3d(in_mean, in_var, weight, bias=None, stride=1, padding=0, ou
 # ----- ----- Poolings ----- -----
 
 
-def avg_pool1d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True, mode="diag"):
+def avg_pool1d(
+    in_mean,
+    in_var,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    count_include_pad=True,
+    mode="diag",
+):
     """Applies an average pooling function for 1D inputs.
 
-    Assumed Density Filtering (ADF) version of `torch.nn.functional.avg_pool1d`.
+    Assumed Density Filtering (ADF) version of
+    `torch.nn.functional.avg_pool1d`.
 
 
     Parameters
@@ -245,27 +359,42 @@ def avg_pool1d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=F
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.avg_pool1d(in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad)
+    out_mean = F.avg_pool1d(
+        in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad
+    )
     kernel_numel = prod(_single(kernel_size))
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.avg_pool1d(in_var / kernel_numel, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool1d(
+            in_var / kernel_numel,
+            kernel_size,
+            stride,
+            padding,
+            ceil_mode,
+            count_include_pad,
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -3)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-2]
         in_var = in_var.flatten(0, -3)  # compress leading batch dimensions
-        out_var = F.avg_pool1d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool1d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-3, -1)  # move back rank dimension
     elif mode.lower() == "full":
         in_var = in_var.movedim((-2, -1), (-4, -3))  # move cov dims away
         unflatten_size = in_var.shape[:-2]
         in_var = in_var.flatten(0, -3)  # compress leading dimensions
-        out_var = F.avg_pool1d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool1d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
         out_var = out_var.movedim((-4, -3), (-2, -1))  # move cov dims back
         unflatten_size = out_var.shape[:-2]
         out_var = out_var.flatten(0, -3)  # compress leading dimensions
-        out_var = F.avg_pool1d(out_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool1d(
+            out_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -274,10 +403,21 @@ def avg_pool1d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=F
     return out_mean, out_var
 
 
-def avg_pool2d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True, divisor_override=None, mode="diag"):
+def avg_pool2d(
+    in_mean,
+    in_var,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    count_include_pad=True,
+    divisor_override=None,
+    mode="diag",
+):
     """Applies an average pooling function for 2D inputs.
 
-    Assumed Density Filtering (ADF) version of `torch.nn.functional.avg_pool2d`.
+    Assumed Density Filtering (ADF) version of
+    `torch.nn.functional.avg_pool2d`.
 
 
     Parameters
@@ -309,27 +449,46 @@ def avg_pool2d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=F
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.avg_pool2d(in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad)
+    out_mean = F.avg_pool2d(
+        in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad
+    )
     kernel_numel = prod(_pair(kernel_size))
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.avg_pool2d(in_var / kernel_numel, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool2d(
+            in_var / kernel_numel,
+            kernel_size,
+            stride,
+            padding,
+            ceil_mode,
+            count_include_pad,
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -4)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-3]
         in_var = in_var.flatten(0, -4)  # compress leading batch dimensions
-        out_var = F.avg_pool2d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool2d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-4, -1)  # move back rank dimension
     elif mode.lower() == "full":
-        in_var = in_var.movedim((-3, -2, -1), (-6, -5, -4))  # move cov dims away
+        in_var = in_var.movedim(
+            (-3, -2, -1), (-6, -5, -4)
+        )  # move cov dims away
         unflatten_size = in_var.shape[:-3]
         in_var = in_var.flatten(0, -4)  # compress leading dimensions
-        out_var = F.avg_pool2d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool2d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
-        out_var = out_var.movedim((-6, -5, -4), (-3, -2, -1))  # move cov dims back
+        out_var = out_var.movedim(
+            (-6, -5, -4), (-3, -2, -1)
+        )  # move cov dims back
         unflatten_size = out_var.shape[:-3]
         out_var = out_var.flatten(0, -4)  # compress leading dimensions
-        out_var = F.avg_pool2d(out_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool2d(
+            out_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -338,10 +497,21 @@ def avg_pool2d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=F
     return out_mean, out_var
 
 
-def avg_pool3d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True, divisor_override=None, mode="diag"):
+def avg_pool3d(
+    in_mean,
+    in_var,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    count_include_pad=True,
+    divisor_override=None,
+    mode="diag",
+):
     """Applies an average pooling function for 3D inputs.
 
-    Assumed Density Filtering (ADF) version of `torch.nn.functional.avg_pool3d`.
+    Assumed Density Filtering (ADF) version of
+    `torch.nn.functional.avg_pool3d`.
 
 
     Parameters
@@ -373,27 +543,46 @@ def avg_pool3d(in_mean, in_var, kernel_size, stride=None, padding=0, ceil_mode=F
     out_var : torch.Tensor
         The transformed (co-)variance tensor.
     """
-    out_mean = F.avg_pool3d(in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad)
+    out_mean = F.avg_pool3d(
+        in_mean, kernel_size, stride, padding, ceil_mode, count_include_pad
+    )
     kernel_numel = prod(_triple(kernel_size))
     if mode.lower() == "diag" or mode.lower() == "diagonal":
-        out_var = F.avg_pool3d(in_var / kernel_numel, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool3d(
+            in_var / kernel_numel,
+            kernel_size,
+            stride,
+            padding,
+            ceil_mode,
+            count_include_pad,
+        )
     elif mode.lower() == "lowrank" or mode.lower() == "half":
         in_var = in_var.movedim(-1, -5)  # move rank dimension out of the way
         unflatten_size = in_var.shape[:-4]
         in_var = in_var.flatten(0, -5)  # compress leading batch dimensions
-        out_var = F.avg_pool3d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool3d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress batch dim
         out_var = out_var.movedim(-5, -1)  # move back rank dimension
     elif mode.lower() == "full":
-        in_var = in_var.movedim((-4, -3, -2, -1), (-8, -7, -6, -5))  # move cov dims away
+        in_var = in_var.movedim(
+            (-4, -3, -2, -1), (-8, -7, -6, -5)
+        )  # move cov dims away
         unflatten_size = in_var.shape[:-4]
         in_var = in_var.flatten(0, -5)  # compress leading dimensions
-        out_var = F.avg_pool3d(in_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool3d(
+            in_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
-        out_var = out_var.movedim((-8, -7, -6, -5), (-4, -3, -2, -1))  # move cov dims back
+        out_var = out_var.movedim(
+            (-8, -7, -6, -5), (-4, -3, -2, -1)
+        )  # move cov dims back
         unflatten_size = out_var.shape[:-4]
         out_var = out_var.flatten(0, -5)  # compress leading dimensions
-        out_var = F.avg_pool3d(out_var, kernel_size, stride, padding, ceil_mode, count_include_pad)
+        out_var = F.avg_pool3d(
+            out_var, kernel_size, stride, padding, ceil_mode, count_include_pad
+        )
         out_var = out_var.unflatten(0, unflatten_size)  # uncompress leading
     else:
         raise ValueError(
@@ -434,8 +623,8 @@ def relu(in_mean, in_var, mode="diag"):
     - if ``in_mean.ndim==5`` the mean input is interpreted as
       ``(batch_dim, num_channels, depth, height, width)``, e.g., for 3D
       convolutions
-    - otherwise the mean input is interpreted as ``(*,in_dim)``, e.g., for dense
-      linear layers
+    - otherwise the mean input is interpreted as ``(*,in_dim)``, e.g., for
+      dense linear layers
 
     The corresponding (co-)variance shapes are interpreted accordingly,
     depending on the covariance propagation mode.
@@ -482,7 +671,9 @@ def relu(in_mean, in_var, mode="diag"):
         out_mean = F.relu(in_mean * cdf + std * pdf)
         out_var = in_var * cdf.unsqueeze(-1)
         if unflatten_size:  # undo previous reshapes if necessary
-            out_mean, out_var = unflatten(out_mean, out_var, 1, unflatten_size, mode)
+            out_mean, out_var = unflatten(
+                out_mean, out_var, 1, unflatten_size, mode
+            )
     elif mode.lower() == "full":
         if in_mean.ndim >= 3 and in_mean.ndim <= 5:  # interpret as conv inputs
             unflatten_size = in_mean.shape[1:]
@@ -496,7 +687,9 @@ def relu(in_mean, in_var, mode="diag"):
         out_mean = F.relu(in_mean * cdf + std * pdf)
         out_var = in_var * cdf.unsqueeze(-2) * cdf.unsqueeze(-1)
         if unflatten_size:  # undo previous reshapes if necessary
-            out_mean, out_var = unflatten(out_mean, out_var, 1, unflatten_size, mode)
+            out_mean, out_var = unflatten(
+                out_mean, out_var, 1, unflatten_size, mode
+            )
     else:
         raise ValueError(
             "Invalid covariance propagation mode: {}".format(mode)
@@ -518,7 +711,8 @@ def linear(in_mean, in_var, weight, bias=None, mode="diag"):
         Input mean tensor. Expected shape is ``(*, in_dim)``.
     in_var : torch.Tensor
         Input (co-)variance tensor. Expected shape is ``(*, in_dim)``,
-        ``(*, in_dim, rank)``, or ``(*, in_dim, in_dim)`` depending on the mode.
+        ``(*, in_dim, rank)``, or ``(*, in_dim, in_dim)`` depending on the
+        mode.
     weight : torch.Tensor or torch.nn.parameter.Parameter
         Weight matrix of the affine linear transform.
     bias : torch.Tensor or torch.nn.parameter.Parameter, optional
@@ -532,7 +726,8 @@ def linear(in_mean, in_var, weight, bias=None, mode="diag"):
         The transformed mean tensor of shape ``(*, out_dim)``.
     out_var : torch.Tensor
         The transformed (co-)variance tensor of shape ``(*, out_dim)``,
-        ``(*, out_dim, rank)``, or ``(*, out_dim, out_dim)`` depending on the mode.
+        ``(*, out_dim, rank)``, or ``(*, out_dim, out_dim)`` depending on the
+        mode.
     """
     out_mean = F.linear(in_mean, weight, bias)
     if mode.lower() == "diag" or mode.lower() == "diagonal":
@@ -604,16 +799,18 @@ def flatten(in_mean, in_var, start_dim, end_dim, mode="diag"):
             raise ValueError(
                 "Invalid dimensions. We do not know how to interpret "
                 "flattening dimensions {} to {} for a full covariance "
-                "input of {} dimensions".format(start_dim, end_dim,
-                                                in_var.ndim)
+                "input of {} dimensions".format(
+                    start_dim, end_dim, in_var.ndim
+                )
             )
 
         # determine split index between first and second covariance half
         half_index = (in_var.ndim - v_start_dim) // 2 + v_start_dim
 
         # flatten the second half first, to not change positions in first
-        out_var = in_var.flatten(half_index,
-                                 half_index + v_end_dim - v_start_dim)
+        out_var = in_var.flatten(
+            half_index, half_index + v_end_dim - v_start_dim
+        )
 
         # flatten the first half of the covariance
         out_var = out_var.flatten(v_start_dim, v_end_dim)

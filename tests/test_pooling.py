@@ -2,12 +2,11 @@
 
 import hypothesis.strategies as st
 import numpy as np
-
 import torch
 
-from torchadf.nn.modules.pooling import AvgPool1d, AvgPool2d, AvgPool3d
-
 from hypothesis import given, settings
+
+from torchadf.nn.modules.pooling import AvgPool1d, AvgPool2d, AvgPool3d
 
 from .strategies import batched_float_array
 
@@ -16,8 +15,11 @@ from .strategies import batched_float_array
 @settings(deadline=None)
 @given(
     st.integers(min_value=0, max_value=7),
-    st.tuples(st.integers(min_value=1, max_value=8)) | st.integers(min_value=1, max_value=8),
-    st.tuples(st.integers(min_value=1, max_value=8)) | st.integers(min_value=1, max_value=8) | st.none(),
+    st.tuples(st.integers(min_value=1, max_value=8))
+    | st.integers(min_value=1, max_value=8),
+    st.tuples(st.integers(min_value=1, max_value=8))
+    | st.integers(min_value=1, max_value=8)
+    | st.none(),
     batched_float_array(min_data_dims=2, max_data_dims=2),
 )
 def test_average_pool_1d(padding, pool_size, strides, x):
@@ -35,15 +37,17 @@ def test_average_pool_1d(padding, pool_size, strides, x):
     else:
         pool_size = min(pool_size, min(means.shape[2:]))
         padding = min(padding, pool_size // 2)
-    layer = AvgPool1d(
-        pool_size, strides, padding, mode=mode
-    )
+    layer = AvgPool1d(pool_size, strides, padding, mode=mode)
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if strides is None:
         strides = pool_size
     if isinstance(strides, tuple):
         strides = strides[0]
-    out_size = tuple(np.floor((np.array(means.shape[2:]) + 2*padding - pool_size) / strides + 1))
+    out_size = tuple(
+        np.floor(
+            (np.array(means.shape[2:]) + 2 * padding - pool_size) / strides + 1
+        )
+    )
     assert means.shape[:2] == means_out.shape[:2]
     assert out_size == means_out.shape[2:]
     if mode == "diag":
@@ -73,7 +77,8 @@ def test_average_pool_1d(padding, pool_size, strides, x):
         st.integers(min_value=1, max_value=8),
         st.integers(min_value=1, max_value=8),
     )
-    | st.integers(min_value=1, max_value=8) | st.none(),
+    | st.integers(min_value=1, max_value=8)
+    | st.none(),
     batched_float_array(min_data_dims=3, max_data_dims=3),
 )
 def test_average_pool_2d(padding, pool_size, strides, x):
@@ -91,13 +96,15 @@ def test_average_pool_2d(padding, pool_size, strides, x):
     else:
         pool_size = min(pool_size, min(means.shape[2:]))
         padding = min(padding, pool_size // 2)
-    layer = AvgPool2d(
-        pool_size, strides, padding, mode=mode
-    )
+    layer = AvgPool2d(pool_size, strides, padding, mode=mode)
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if strides is None:
         strides = pool_size
-    out_size = tuple(np.floor((np.array(means.shape[2:]) + 2*padding - pool_size) / strides + 1))
+    out_size = tuple(
+        np.floor(
+            (np.array(means.shape[2:]) + 2 * padding - pool_size) / strides + 1
+        )
+    )
     assert means.shape[:2] == means_out.shape[:2]
     assert out_size == means_out.shape[2:]
     if mode == "diag":
@@ -129,7 +136,8 @@ def test_average_pool_2d(padding, pool_size, strides, x):
         st.integers(min_value=1, max_value=8),
         st.integers(min_value=1, max_value=8),
     )
-    | st.integers(min_value=1, max_value=8) | st.none(),
+    | st.integers(min_value=1, max_value=8)
+    | st.none(),
     batched_float_array(min_data_dims=4, max_data_dims=4),
 )
 def test_average_pool_3d(padding, pool_size, strides, x):
@@ -147,13 +155,15 @@ def test_average_pool_3d(padding, pool_size, strides, x):
     else:
         pool_size = min(pool_size, min(means.shape[2:]))
         padding = min(padding, pool_size // 2)
-    layer = AvgPool3d(
-        pool_size, strides, padding, mode=mode
-    )
+    layer = AvgPool3d(pool_size, strides, padding, mode=mode)
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if strides is None:
         strides = pool_size
-    out_size = tuple(np.floor((np.array(means.shape[2:]) + 2*padding - pool_size) / strides + 1))
+    out_size = tuple(
+        np.floor(
+            (np.array(means.shape[2:]) + 2 * padding - pool_size) / strides + 1
+        )
+    )
     assert means.shape[:2] == means_out.shape[:2]
     assert out_size == means_out.shape[2:]
     if mode == "diag":

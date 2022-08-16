@@ -1,13 +1,11 @@
 """Tests for `torchadf.nn.modules.linear`. """
 
 import hypothesis.strategies as st
-
 import torch
-
-from torchadf.nn.modules.linear import Identity, Linear
 
 from hypothesis import given, settings
 
+from torchadf.nn.modules.linear import Identity, Linear
 
 from .strategies import assert_eq, batched_float_array
 

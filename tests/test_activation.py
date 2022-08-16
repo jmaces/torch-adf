@@ -1,10 +1,9 @@
 """Tests for `torchadf.nn.modules.activation`. """
 
 import numpy as np
+import torch
 
 from hypothesis import given
-
-import torch
 
 from torchadf.nn.modules.activation import ReLU
 
@@ -46,8 +45,8 @@ def test_relu(x):
                     covariances_out,
                     (
                         cov_shape[0],
-                        np.prod(cov_shape[1:cov_rank // 2 + 1]),
-                        np.prod(cov_shape[cov_rank // 2 + 1:]),
+                        np.prod(cov_shape[1 : cov_rank // 2 + 1]),
+                        np.prod(cov_shape[cov_rank // 2 + 1 :]),
                     ),
                 ),
                 axis1=-2,

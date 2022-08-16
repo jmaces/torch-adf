@@ -3,12 +3,11 @@
 import hypothesis.strategies as st
 import numpy as np
 import pytest
-
 import torch
 
-from torchadf.nn.modules.conv import Conv1d, Conv2d, Conv3d
-
 from hypothesis import given, settings
+
+from torchadf.nn.modules.conv import Conv1d, Conv2d, Conv3d
 
 from .strategies import batched_float_array
 
@@ -18,8 +17,10 @@ from .strategies import batched_float_array
 @pytest.mark.parametrize("padding", ["same", "valid"])
 @given(
     st.integers(min_value=1, max_value=64),
-    st.tuples(st.integers(min_value=1, max_value=8)) | st.integers(min_value=1, max_value=8),
-    st.tuples(st.integers(min_value=1, max_value=8)) | st.integers(min_value=1, max_value=8),
+    st.tuples(st.integers(min_value=1, max_value=8))
+    | st.integers(min_value=1, max_value=8),
+    st.tuples(st.integers(min_value=1, max_value=8))
+    | st.integers(min_value=1, max_value=8),
     batched_float_array(min_data_dims=2, max_data_dims=2),
 )
 def test_convolution_1d(padding, filters, kernel_size, strides, x):
@@ -37,7 +38,13 @@ def test_convolution_1d(padding, filters, kernel_size, strides, x):
     if padding == "same":
         strides = 1  # strided convs not supported for padding=same
     layer = Conv1d(
-        means.shape[1], filters, kernel_size, strides, padding, mode=mode, dtype=means_tensor.dtype,
+        means.shape[1],
+        filters,
+        kernel_size,
+        strides,
+        padding,
+        mode=mode,
+        dtype=means_tensor.dtype,
     )
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if isinstance(kernel_size, tuple):
@@ -99,7 +106,13 @@ def test_convolution_2d(padding, filters, kernel_size, strides, x):
     if padding == "same":
         strides = 1  # strided convs not supported for padding=same
     layer = Conv2d(
-        means.shape[1], filters, kernel_size, strides, padding, mode=mode, dtype=means_tensor.dtype,
+        means.shape[1],
+        filters,
+        kernel_size,
+        strides,
+        padding,
+        mode=mode,
+        dtype=means_tensor.dtype,
     )
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if padding == "same":
@@ -166,7 +179,13 @@ def test_convolution_3d(padding, filters, kernel_size, strides, x):
     if padding == "same":
         strides = 1  # strided convs not supported for padding=same
     layer = Conv3d(
-        means.shape[1], filters, kernel_size, strides, padding, mode=mode, dtype=means_tensor.dtype,
+        means.shape[1],
+        filters,
+        kernel_size,
+        strides,
+        padding,
+        mode=mode,
+        dtype=means_tensor.dtype,
     )
     means_out, covariances_out = layer(means_tensor, covariances_tensor)
     if padding == "same":

@@ -1,15 +1,13 @@
 """Tests for `torchadf.nn.modules.container`. """
 
 import hypothesis.strategies as st
-
 import torch
-
-from torchadf.nn.modules.linear import Linear
-from torchadf.nn.modules.conv import Conv1d, Conv2d, Conv3d
-from torchadf.nn.modules.container import Sequential
 
 from hypothesis import given, settings
 
+from torchadf.nn.modules.container import Sequential
+from torchadf.nn.modules.conv import Conv1d, Conv2d, Conv3d
+from torchadf.nn.modules.linear import Linear
 
 from .strategies import batched_float_array
 
@@ -28,8 +26,11 @@ def test_sequential_linear(x, units):
     means, covariances, mode = x
     means_tensor = torch.tensor(means)  # same dtype of means
     covariances_tensor = torch.tensor(covariances)  # same dtype of covariances
-    units = (means.shape[-1],)+units
-    layers = [Linear(units[k], units[k+1], mode=mode, dtype=means_tensor.dtype) for k in range(len(units)-1)]
+    units = (means.shape[-1],) + units
+    layers = [
+        Linear(units[k], units[k + 1], mode=mode, dtype=means_tensor.dtype)
+        for k in range(len(units) - 1)
+    ]
     model = Sequential(*layers)
     means_out, covariances_out = model(means_tensor, covariances_tensor)
     means_out = means_out.detach().numpy()
@@ -63,10 +64,19 @@ def test_sequential_convolution_1d(filters, x):
     means, covariances, mode = x
     means_tensor = torch.tensor(means)  # same dtype of means
     covariances_tensor = torch.tensor(covariances)  # same dtype of covariances
-    filters = (means.shape[1],)+filters
-    layers = [Conv1d(
-        filters[k], filters[k+1], 3, 1, "same", mode=mode, dtype=means_tensor.dtype,
-    ) for k in range(len(filters)-1)]
+    filters = (means.shape[1],) + filters
+    layers = [
+        Conv1d(
+            filters[k],
+            filters[k + 1],
+            3,
+            1,
+            "same",
+            mode=mode,
+            dtype=means_tensor.dtype,
+        )
+        for k in range(len(filters) - 1)
+    ]
     model = Sequential(*layers)
     means_out, covariances_out = model(means_tensor, covariances_tensor)
     assert means.shape[0] == means_out.shape[0]
@@ -97,10 +107,19 @@ def test_squential_convolution_2d(filters, x):
     means, covariances, mode = x
     means_tensor = torch.tensor(means)  # same dtype of means
     covariances_tensor = torch.tensor(covariances)  # same dtype of covariances
-    filters = (means.shape[1],)+filters
-    layers = [Conv2d(
-        filters[k], filters[k+1], 3, 1, "same", mode=mode, dtype=means_tensor.dtype,
-    ) for k in range(len(filters)-1)]
+    filters = (means.shape[1],) + filters
+    layers = [
+        Conv2d(
+            filters[k],
+            filters[k + 1],
+            3,
+            1,
+            "same",
+            mode=mode,
+            dtype=means_tensor.dtype,
+        )
+        for k in range(len(filters) - 1)
+    ]
     model = Sequential(*layers)
     means_out, covariances_out = model(means_tensor, covariances_tensor)
     assert means.shape[0] == means_out.shape[0]
@@ -131,10 +150,19 @@ def test_sequential_convolution_3d(filters, x):
     means, covariances, mode = x
     means_tensor = torch.tensor(means)  # same dtype of means
     covariances_tensor = torch.tensor(covariances)  # same dtype of covariances
-    filters = (means.shape[1],)+filters
-    layers = [Conv3d(
-        filters[k], filters[k+1], 3, 1, "same", mode=mode, dtype=means_tensor.dtype,
-    ) for k in range(len(filters)-1)]
+    filters = (means.shape[1],) + filters
+    layers = [
+        Conv3d(
+            filters[k],
+            filters[k + 1],
+            3,
+            1,
+            "same",
+            mode=mode,
+            dtype=means_tensor.dtype,
+        )
+        for k in range(len(filters) - 1)
+    ]
     model = Sequential(*layers)
     means_out, covariances_out = model(means_tensor, covariances_tensor)
     assert means.shape[0] == means_out.shape[0]

@@ -2,10 +2,9 @@
 
 import torch
 
-from torchadf.nn.modules.flatten import Flatten, Unflatten
-
 from hypothesis import given, settings
 
+from torchadf.nn.modules.flatten import Flatten, Unflatten
 
 from .strategies import assert_eq, batched_float_array
 
@@ -43,7 +42,9 @@ def test_flatten_unflatten(x):
     unflatten_size = means_tensor.shape[1:]
     fl_layer = Flatten(mode=mode)
     ufl_layer = Unflatten(1, unflatten_size, mode=mode)
-    means_out, covariances_out = ufl_layer(*fl_layer(means_tensor, covariances_tensor))
+    means_out, covariances_out = ufl_layer(
+        *fl_layer(means_tensor, covariances_tensor)
+    )
     means_out = means_out.detach().numpy()
     covariances_out = covariances_out.detach().numpy()
     assert means.shape == means_out.shape

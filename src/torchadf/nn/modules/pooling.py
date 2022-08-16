@@ -1,5 +1,5 @@
 from torch.nn.modules.pooling import _AvgPoolNd
-from torch.nn.modules.utils import _single, _pair, _triple
+from torch.nn.modules.utils import _pair, _single, _triple
 
 from .. import functional as F
 
@@ -26,8 +26,16 @@ class AvgPool1d(_AvgPoolNd):
         Covariance propagation mode (Default "diag").
 
     """
-    def __init__(self, kernel_size, stride=None, padding=0, ceil_mode=False,
-                 count_include_pad=True, mode="diag"):
+
+    def __init__(
+        self,
+        kernel_size,
+        stride=None,
+        padding=0,
+        ceil_mode=False,
+        count_include_pad=True,
+        mode="diag",
+    ):
         super(AvgPool1d, self).__init__()
         self.kernel_size = _single(kernel_size)
         self.stride = _single(stride if stride is not None else kernel_size)
@@ -38,8 +46,15 @@ class AvgPool1d(_AvgPoolNd):
 
     def forward(self, in_mean, in_var):
         return F.avg_pool1d(
-            in_mean, in_var, self.kernel_size, self.stride, self.padding, self.ceil_mode,
-            self.count_include_pad, self.mode)
+            in_mean,
+            in_var,
+            self.kernel_size,
+            self.stride,
+            self.padding,
+            self.ceil_mode,
+            self.count_include_pad,
+            self.mode,
+        )
 
 
 class AvgPool2d(_AvgPoolNd):
@@ -67,8 +82,17 @@ class AvgPool2d(_AvgPoolNd):
         Covariance propagation mode (Default "diag").
 
     """
-    def __init__(self, kernel_size, stride=None, padding=0, ceil_mode=False,
-                 count_include_pad=True, divisor_override=None, mode="diag"):
+
+    def __init__(
+        self,
+        kernel_size,
+        stride=None,
+        padding=0,
+        ceil_mode=False,
+        count_include_pad=True,
+        divisor_override=None,
+        mode="diag",
+    ):
         super(AvgPool2d, self).__init__()
         self.kernel_size = _pair(kernel_size)
         self.stride = _pair(stride if stride is not None else kernel_size)
@@ -80,8 +104,16 @@ class AvgPool2d(_AvgPoolNd):
 
     def forward(self, in_mean, in_var):
         return F.avg_pool2d(
-            in_mean, in_var, self.kernel_size, self.stride, self.padding, self.ceil_mode,
-            self.count_include_pad, self.divisor_override, self.mode)
+            in_mean,
+            in_var,
+            self.kernel_size,
+            self.stride,
+            self.padding,
+            self.ceil_mode,
+            self.count_include_pad,
+            self.divisor_override,
+            self.mode,
+        )
 
 
 class AvgPool3d(_AvgPoolNd):
@@ -109,8 +141,17 @@ class AvgPool3d(_AvgPoolNd):
         Covariance propagation mode (Default "diag").
 
     """
-    def __init__(self, kernel_size, stride=None, padding=0, ceil_mode=False,
-                 count_include_pad=True, divisor_override=None, mode="diag"):
+
+    def __init__(
+        self,
+        kernel_size,
+        stride=None,
+        padding=0,
+        ceil_mode=False,
+        count_include_pad=True,
+        divisor_override=None,
+        mode="diag",
+    ):
         super(AvgPool3d, self).__init__()
         self.kernel_size = _triple(kernel_size)
         self.stride = _triple(stride if stride is not None else kernel_size)
@@ -122,5 +163,13 @@ class AvgPool3d(_AvgPoolNd):
 
     def forward(self, in_mean, in_var):
         return F.avg_pool3d(
-            in_mean, in_var, self.kernel_size, self.stride, self.padding, self.ceil_mode,
-            self.count_include_pad, self.divisor_override, self.mode)
+            in_mean,
+            in_var,
+            self.kernel_size,
+            self.stride,
+            self.padding,
+            self.ceil_mode,
+            self.count_include_pad,
+            self.divisor_override,
+            self.mode,
+        )
