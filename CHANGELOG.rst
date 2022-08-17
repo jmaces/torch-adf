@@ -20,7 +20,7 @@ Changes for the upcoming release can be found in the `"changelog.d" directory <h
 Changes
 ^^^^^^^
 
-- Initial release.
+- Initial release.`#1 <https://github.com/jmaces/torch-adf/issues/1>`_
 
   Functional API
   **************
@@ -61,7 +61,7 @@ Changes
   + torch.nn.modules.pooling.AvgPool1d
   + torch.nn.modules.pooling.AvgPool2d
   + torch.nn.modules.pooling.AvgPool3d
-  `#1 <https://github.com/jmaces/torch-adf/issues/1>`_
+
 
 
 ----
