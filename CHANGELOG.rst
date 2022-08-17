@@ -42,20 +42,20 @@ Changes
 
   - Modules
 
-    + torch.nn.modules.activation.ReLU
+    + torchadf.nn.modules.activation.ReLU
 
-    + torch.nn.modules.container.Sequential
+    + torchadf.nn.modules.container.Sequential
 
-    + torch.nn.modules.conv.Conv1d
-    + torch.nn.modules.conv.Conv2d
-    + torch.nn.modules.conv.Conv3d
+    + torchadf.nn.modules.conv.Conv1d
+    + torchadf.nn.modules.conv.Conv2d
+    + torchadf.nn.modules.conv.Conv3d
 
-    + torch.nn.modules.flatten.Flatten
-    + torch.nn.modules.flatten.Unflatten
+    + torchadf.nn.modules.flatten.Flatten
+    + torchadf.nn.modules.flatten.Unflatten
 
-    + torch.nn.modules.linear.Identity
-    + torch.nn.modules.linear.Linear
+    + torchadf.nn.modules.linear.Identity
+    + torchadf.nn.modules.linear.Linear
 
-    + torch.nn.modules.pooling.AvgPool1d
-    + torch.nn.modules.pooling.AvgPool2d
-    + torch.nn.modules.pooling.AvgPool3d
+    + torchadf.nn.modules.pooling.AvgPool1d
+    + torchadf.nn.modules.pooling.AvgPool2d
+    + torchadf.nn.modules.pooling.AvgPool3d

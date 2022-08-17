@@ -14,7 +14,7 @@ Modules and Functions
 ---------------------
 
 In the same way as their PyTorch counterparts, most ADF layers are
-available in a functional form and as modules (e.g. to be used within a `torch.nn.Sequential` model or as submodules within any other `torch.nn.Module`).
+available in a functional form and as modules (e.g. to be used within a `torchadf.nn.modules.container.Sequential` model or as submodules within any other `torch.nn.Module`).
 
 
 (Co-)Variance Computation Modes

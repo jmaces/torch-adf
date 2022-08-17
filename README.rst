@@ -45,7 +45,7 @@ instead of one, so it is not possible to simply mix ADF and standard layers with
 
 .. code-block:: python
 
-    from torch.nn import Sequential
+    from torchadf.nn import Sequential
     from torchadf.nn import Linear
 
     in_dim, out_dim = 64, 32
