@@ -9,10 +9,10 @@ their options and is intended for *quickly looking up* things.
 If you like a more *hands-on introduction*, have a look at our `examples`.
 
 
-torch.nn
---------
+torchadf.nn
+-----------
 
-.. automodule:: torch.nn
+.. automodule:: torchadf.nn
 
 Collects aliases of all the supported layers in submodules of the package.
 See below for details on the individual submodules.

@@ -10,7 +10,7 @@ propagate a distribution parametrized by its mean and (co-)variance.
 """
 
 # package meta data
-__version__ = "22.1.0"  # 0Y.Minor.Micro CalVer format
+__version__ = "22.2.0.dev"  # 0Y.Minor.Micro CalVer format
 __title__ = "torch-adf"
 __description__ = "Assumed Density Filtering (ADF) Probabilistic Networks"
 __url__ = "https://github.com/jmaces/torch-adf"
