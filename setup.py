@@ -31,7 +31,7 @@ CLASSIFIERS = [
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Mathematics",
-    # "Private :: Do Not Upload",  # safeguard - remove for actual packages
+    "Private :: Do Not Upload",  # safeguard - remove for actual packages
 ]
 INSTALL_REQUIRES = ["torch", "numpy"]
 EXTRAS_REQUIRE = {

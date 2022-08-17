@@ -65,7 +65,7 @@ Project Information
 its documentation lives at `Read the Docs <https://torch-adf.readthedocs.io/en/latest/>`_,
 the code on `GitHub <https://github.com/jmaces/torch-adf>`_,
 and the latest release can be found on `PyPI <https://pypi.org/project/torch-adf/>`_.
-It’s tested on Python 3.4+.
+It’s tested on Python 3.6+.
 
 If you'd like to contribute to ``torch-adf`` you're most welcome.
 We have written a `short guide <https://github.com/jmaces/torch-adf/blob/main/.github/CONTRIBUTING.rst>`_ to help you get you started!
